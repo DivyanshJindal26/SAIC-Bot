@@ -9,6 +9,8 @@ const {
   EMAIL_USER,
   EMAIL_PASS,
   STUDENT_ROLE_ID,
+  ANON_CHANNEL_ID,
+  ANON_WEBHOOK_URL,
 } = process.env;
 
 // Optional warnings for missing critical envs
@@ -27,4 +29,6 @@ module.exports = {
   EMAIL_USER,
   EMAIL_PASS,
   STUDENT_ROLE_ID,
+  ANON_CHANNEL_ID,
+  ANON_WEBHOOK_URL,
 };

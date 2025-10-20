@@ -116,18 +116,53 @@ client.on("interactionCreate", async (interaction) => {
   await commandHandler.handleInteraction(interaction);
 });
 
-// client.on("messageCreate", async (message) => {
-//   await messageHelper.handleCreate(message, client);
-//   try {
-//     if (!message.author.bot) {
-//       const member = await message.guild.members.fetch(
-//         message.interactionMetadata
-//           ? message.interactionMetadata.user.id
-//           : message.author.id
-//       );
-//     }
-//   } catch {}
-// });
+client.on("messageCreate", async (message) => {
+  const { ANON_CHANNEL_ID, ANON_WEBHOOK_URL } = require("./config");
+  const { WebhookClient } = require("discord.js");
+  const { getAnonymousIdentity } = require("./helpers/anonymousIdentity");
+
+  if (!message.author.bot && message.channel.id === ANON_CHANNEL_ID) {
+    try {
+      // Get or create anonymous identity for this user
+      const identity = getAnonymousIdentity(message.author.id);
+
+      // Prepare webhook payload
+      const webhookPayload = {
+        username: identity.username,
+        avatarURL: identity.avatarUrl,
+      };
+
+      if (message.content) webhookPayload.content = message.content;
+
+      if (message.attachments.size > 0) {
+        webhookPayload.files = Array.from(message.attachments.values()).map(
+          (att) => ({
+            attachment: att.url,
+            name: att.name,
+          })
+        );
+      }
+
+      if (message.embeds.length > 0) webhookPayload.embeds = message.embeds;
+
+      // Create webhook client
+      const webhook = new WebhookClient({ url: ANON_WEBHOOK_URL });
+
+      // Delete original message and send via webhook in parallel
+      await Promise.all([message.delete(), webhook.send(webhookPayload)]);
+
+      console.log(
+        `[Anonymous] ${message.author.tag} (${message.author.id}) as ${identity.username}`
+      );
+      return; // Don't process other triggers
+    } catch (error) {
+      console.error("Error handling anonymous message:", error);
+    }
+  }
+
+  // Handle all other message triggers
+  // await messageHelper.handleCreate(message, client);
+});
 
 // const triggersPath1 = path.join(__dirname, 'triggers/messageUpdate');
 // const triggerFiles1 = fs.readdirSync(triggersPath1).filter(file => file.endsWith('.js'));
