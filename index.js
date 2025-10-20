@@ -101,34 +101,33 @@ client.once("clientReady", async () => {
   await recreateGiveawayTimers(client.guilds.cache.get("1429429222035685489"));
 });
 
-// Load message create triggers
-const triggersPath = path.join(__dirname, "triggers/messageCreate");
-const triggerFiles = fs
-  .readdirSync(triggersPath)
-  .filter((file) => file.endsWith(".js"));
-for (const file of triggerFiles) {
-  const trigger = require(path.join(triggersPath, file));
-  messageHelper.addMsgCreate(trigger);
-}
+// // Load message create triggers
+// const triggersPath = path.join(__dirname, "triggers/messageCreate");
+// const triggerFiles = fs
+//   .readdirSync(triggersPath)
+//   .filter((file) => file.endsWith(".js"));
+// for (const file of triggerFiles) {
+//   const trigger = require(path.join(triggersPath, file));
+//   messageHelper.addMsgCreate(trigger);
+// }
 
 // accepting interactions
 client.on("interactionCreate", async (interaction) => {
   await commandHandler.handleInteraction(interaction);
 });
 
-client.on("messageCreate", async (message) => {
-  await messageHelper.handleCreate(message, client);
-  try {
-    if (!message.author.bot) {
-      const member = await message.guild.members.fetch(
-        message.interactionMetadata
-          ? message.interactionMetadata.user.id
-          : message.author.id
-      );
-      await addXp(member, message.channel, message.guild);
-    }
-  } catch {}
-});
+// client.on("messageCreate", async (message) => {
+//   await messageHelper.handleCreate(message, client);
+//   try {
+//     if (!message.author.bot) {
+//       const member = await message.guild.members.fetch(
+//         message.interactionMetadata
+//           ? message.interactionMetadata.user.id
+//           : message.author.id
+//       );
+//     }
+//   } catch {}
+// });
 
 // const triggersPath1 = path.join(__dirname, 'triggers/messageUpdate');
 // const triggerFiles1 = fs.readdirSync(triggersPath1).filter(file => file.endsWith('.js'));
