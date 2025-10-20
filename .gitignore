@@ -1,0 +1,29 @@
+# Node & package managers
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Env files
+.env
+.env.local
+.env.*.local
+
+# Logs
+npm-debug.log*
+logs/
+*.log
+
+# OS/Editor cruft
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Docker volumes and data
+data/
+mongodb-backup/
+*.tar.gz
+
+# Temporary files
+tmp/
+temp/
