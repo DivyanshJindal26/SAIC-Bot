@@ -3,24 +3,26 @@ const { EmbedBuilder } = require("discord.js");
 module.exports = {
   name: "welcome",
   execute: async (member) => {
-    const welcomeChannel = member.guild.channels.cache.get(
-      "1429429222782402728"
-    );
-    const userAvatarURL = member.user.displayAvatarURL({ dynamic: true });
-
-    const embed = new EmbedBuilder()
-      .setColor("#00ffff")
-      .setTitle(`Welcome to ${member.guild.name}, ${member.user.username}!`)
-      .setDescription(`We're thrilled to have you join our community!`)
-      .setThumbnail(userAvatarURL);
-
     try {
-      await welcomeChannel.send({
-        content: `Welcome, ${member}! `,
-        embeds: [embed],
-      });
+      // DM the user to verify
+      const dmEmbed = new EmbedBuilder()
+        .setColor("#00ffff")
+        .setTitle("Welcome! Please Verify Your Account")
+        .setDescription(
+          `Thank you for joining **${member.guild.name}**!\n\n` +
+            `To access all channels and features, please verify your account by going to the <#1429552987088355329> channel and following the verification process.\n\n` +
+            `This helps us maintain a safe and authentic community.`
+        )
+        .setThumbnail(member.guild.iconURL({ dynamic: true }))
+        .setFooter({ text: "If you need help, please contact a moderator." });
+
+      await member.send({ embeds: [dmEmbed] });
     } catch (error) {
-      console.error("Error sending welcome message:", error);
+      if (error.code === 50007) {
+        console.log(`Cannot send DM to ${member.user.tag} - DMs are disabled`);
+      } else {
+        console.error("Error sending welcome message:", error);
+      }
     }
   },
 };

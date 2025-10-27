@@ -1,7 +1,7 @@
 // commands/modal/verifyOtpModal.js
 const { EmbedBuilder } = require("discord.js");
 const { verifyOTP } = require("../../helpers/verification");
-const { STUDENT_ROLE_ID } = require("../../config");
+const { STUDENT_ROLE_ID, UNVERIFIED_ROLE_ID } = require("../../config");
 
 module.exports = {
   name: "verifyOtpModal",
@@ -32,6 +32,7 @@ module.exports = {
       try {
         const member = interaction.member;
         const role = interaction.guild.roles.cache.get(STUDENT_ROLE_ID);
+        const remrole = interaction.guild.roles.cache.get(UNVERIFIED_ROLE_ID);
 
         if (!role) {
           console.error(
@@ -45,6 +46,7 @@ module.exports = {
 
         // Add role to member
         await member.roles.add(role);
+        await member.roles.remove(remrole);
 
         // Success embed
         const successEmbed = new EmbedBuilder()
@@ -62,6 +64,26 @@ module.exports = {
         await interaction.editReply({
           embeds: [successEmbed],
         });
+
+        const welcomeChannel = member.guild.channels.cache.get(
+          "1429429222782402728"
+        );
+        const userAvatarURL = member.user.displayAvatarURL({ dynamic: true });
+
+        const embed = new EmbedBuilder()
+          .setColor("#00ffff")
+          .setTitle(`Welcome to ${member.guild.name}, ${member.user.username}!`)
+          .setDescription(`We're thrilled to have you join our community!`)
+          .setThumbnail(userAvatarURL);
+
+        try {
+          await welcomeChannel.send({
+            content: `Welcome, ${member}! `,
+            embeds: [embed],
+          });
+        } catch (error) {
+          console.error("Error sending welcome message:", error);
+        }
 
         // Log successful verification
         console.log(

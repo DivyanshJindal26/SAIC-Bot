@@ -11,6 +11,7 @@ const {
   STUDENT_ROLE_ID,
   ANON_CHANNEL_ID,
   ANON_WEBHOOK_URL,
+  UNVERIFIED_ROLE_ID,
 } = process.env;
 
 // Optional warnings for missing critical envs
