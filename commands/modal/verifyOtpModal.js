@@ -34,7 +34,7 @@ module.exports = {
         const role = interaction.guild.roles.cache.get(STUDENT_ROLE_ID);
         const remrole = interaction.guild.roles.cache.get(UNVERIFIED_ROLE_ID);
 
-        if (!role) {
+        if (!role || !remrole) {
           console.error(
             "Student role not found! Check STUDENT_ROLE_ID in .env"
           );

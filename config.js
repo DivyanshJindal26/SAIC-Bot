@@ -32,4 +32,5 @@ module.exports = {
   STUDENT_ROLE_ID,
   ANON_CHANNEL_ID,
   ANON_WEBHOOK_URL,
+  UNVERIFIED_ROLE_ID,
 };
